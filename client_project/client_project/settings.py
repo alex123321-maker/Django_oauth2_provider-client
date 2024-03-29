@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'corsheaders',
     'rest_framework',
+    'drf_yasg',
 
     "client_app",
 ]
@@ -58,8 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+
 
 ROOT_URLCONF = 'client_project.urls'
 
@@ -128,6 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = str(BASE_DIR) + '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -160,14 +161,25 @@ OAUTH2_CLIENT_ID  = 'NxxMAmnxojRa2TudrDoKFN0IWARlenPoqSiHkByG' # confidentionl c
 OAUTH2_CLIENT_SECRET  = 'ageAK1kLM2q1oW95TMlUysYq7FOtF8GqW4q2euCkQwxfQOybIC0L5EndsC4aTuQxODeiWubLU1maUDbge91hEBmIEp4gdBeCl5WvrjHCV50ZjKxr0SLdwp4QgsCTJCkv'
 OAUTH2_REDIRECT_URI = 'http://127.0.0.2:8000/oauth2/callback/'
 OAUTH2_PROVIDER_URL = 'http://127.0.0.1:8000/o/'
-
+OAUTH2_REDIRECT_URL = OAUTH2_REDIRECT_URI
 OAUTH2_PROVIDER = {
     
-    'RESOURCE_SERVER_INTROSPECTION_URL': 'http://127.0.0.1:8000/o/introspect/',
+    'RESOURCE_SERVER_INTROSPECTION_URL': f'{OAUTH2_PROVIDER_URL}introspect/',
     'RESOURCE_SERVER_INTROSPECTION_CREDENTIALS': (OAUTH2_CLIENT_ID,OAUTH2_CLIENT_SECRET),
     
 }
 
+SWAGGER_SETTINGS = {
+
+    
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}
 if not DEBUG:
     logger.remove()
     

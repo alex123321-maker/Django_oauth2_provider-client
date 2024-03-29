@@ -70,7 +70,7 @@ def oauth2_callback(request):
                 token_json = token_response.json()
                 access_token = token_json.get('access_token')
                 if access_token:
-                    return HttpResponse(f"Access Token: {access_token}")
+                    return HttpResponse(f"Access Token: Bearer {access_token}")
                 else:
                     return HttpResponse("Error getting access token", status=400)
             except ValueError:
@@ -95,3 +95,17 @@ class ExampleView(APIView):
             'auth': str(request.auth),  # None
         }
         return Response(content)
+    
+    
+from rest_framework import generics
+from .models import Task
+from .serializers import TaskSerializer
+
+class TaskListCreate(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+class TaskDetailUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
