@@ -143,7 +143,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 OAUTH2_PROVIDER = {
-    'SCOPES': {'read': 'Read scope'}
+    'SCOPES': {'read': 'Read scope','introspection':'Introspect token scope' }
 }
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

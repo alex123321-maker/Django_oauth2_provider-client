@@ -40,7 +40,7 @@ def oauth2_login(request):
     state = generate_state()
     # Сохраняем code_verifier вместе с сгенерированным state
     STATE_CODE_VERIFIER_STORAGE[state] = code_verifier
-    auth_url = f"{settings.OAUTH2_PROVIDER_URL}authorize/?client_id={settings.OAUTH2_CLIENT_ID}&response_type=code&redirect_uri={settings.OAUTH2_REDIRECT_URI}&scope=read&code_challenge={code_challenge}&code_challenge_method=S256&state={state}"
+    auth_url = f"{settings.OAUTH2_PROVIDER_URL}authorize/?client_id={settings.OAUTH2_CLIENT_ID}&response_type=code&redirect_uri={settings.OAUTH2_REDIRECT_URI}&scope=read introspection&code_challenge={code_challenge}&code_challenge_method=S256&state={state}"
     return redirect(auth_url)
 
 # Измените функцию oauth2_callback:

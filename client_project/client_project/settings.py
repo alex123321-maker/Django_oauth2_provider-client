@@ -50,13 +50,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
@@ -136,9 +136,7 @@ STATIC_URL = 'static/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework.authentication.BasicAuthentication',  # enables simple command line authentication
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -162,6 +160,13 @@ OAUTH2_CLIENT_ID  = 'NxxMAmnxojRa2TudrDoKFN0IWARlenPoqSiHkByG' # confidentionl c
 OAUTH2_CLIENT_SECRET  = 'ageAK1kLM2q1oW95TMlUysYq7FOtF8GqW4q2euCkQwxfQOybIC0L5EndsC4aTuQxODeiWubLU1maUDbge91hEBmIEp4gdBeCl5WvrjHCV50ZjKxr0SLdwp4QgsCTJCkv'
 OAUTH2_REDIRECT_URI = 'http://127.0.0.2:8000/oauth2/callback/'
 OAUTH2_PROVIDER_URL = 'http://127.0.0.1:8000/o/'
+
+OAUTH2_PROVIDER = {
+    
+    'RESOURCE_SERVER_INTROSPECTION_URL': 'http://127.0.0.1:8000/o/introspect/',
+    'RESOURCE_SERVER_INTROSPECTION_CREDENTIALS': (OAUTH2_CLIENT_ID,OAUTH2_CLIENT_SECRET),
+    
+}
 
 if not DEBUG:
     logger.remove()
