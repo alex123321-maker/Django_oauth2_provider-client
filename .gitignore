@@ -2,3 +2,4 @@
 /log
 static
 *.pyc
+.env

@@ -13,19 +13,17 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from loguru import logger
 import sys
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--nq)v(f9k#-v0s$hz#+7&eu+-mw_*f_l$&@_26^^%24rgzi&-o'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+env = environ.Env()
+environ.Env.read_env(env_file=os.path.join(BASE_DIR,'.env'))
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 
