@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  provider:
+    volumes:
+      - static:/static
+    env_file:
+      - provider_project/.env.docker
+    build: 
+      context: provider_project/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-db
+    networks:
+      provider-network:
+        aliases:
+          - provider
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: provider
+      POSTGRES_USER: provider
+      POSTGRES_PASSWORD: provider
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - provider-network
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - provider
+
+volumes:
+  pg_data:
+  static:
+
+networks:
+  provider-network:
+    driver: bridge
