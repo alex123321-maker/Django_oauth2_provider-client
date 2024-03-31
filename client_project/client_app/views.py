@@ -51,7 +51,7 @@ def oauth2_callback(request):
         code_verifier = STATE_CODE_VERIFIER_STORAGE.pop(state, '')
         # Оставшаяся часть функции остается без изменений
 
-        token_url = f"{settings.OAUTH2_PROVIDER_URL}token/"
+        token_url = f"http://provider:8000/o/token/"
         logger.info(f"oauth2_callback - session_id: {request.session.session_key}, используемый code_verifier: {code_verifier}")
 
         token_data = {

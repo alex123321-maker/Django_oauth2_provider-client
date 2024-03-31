@@ -2,46 +2,93 @@ version: '3.7'
 
 services:
   provider:
+    container_name: provider
     volumes:
-      - static:/static
+      - provider-static:/provider/static
     env_file:
       - provider_project/.env.docker
     build: 
       context: provider_project/
-    ports:
-      - "8000:8000"
+      dockerfile: Dockerfile
+    command: gunicorn provider_project.wsgi:application --bind 0.0.0.0:8000 --log-level info
+    expose:
+    - 8000
+    restart: on-failure:5
     depends_on:
-      - postgres-db
+      - provider-postgres-db
     networks:
-      provider-network:
-        aliases:
-          - provider
-  postgres-db:
+      - network
+
+        
+  provider-postgres-db:
     image: postgres:latest
-    container_name: postgres
+    container_name: provider-postgres
     environment:
       POSTGRES_DB: provider
       POSTGRES_USER: provider
       POSTGRES_PASSWORD: provider
-    ports:
-      - "5432:5432"
+    expose:
+      - 5432
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - provider-pg_data:/var/lib/postgresql/data
     networks:
-      - provider-network
-  nginx:
-    build: ./nginx
+      - network
+
+  client:
+    container_name: client
     volumes:
-      - static:/static
+      - client-static:/client/static
+    env_file:
+      - client_project/.env.docker
+    build: 
+      context: client_project/
+      dockerfile: Dockerfile
+    expose:
+    - 8000
+    restart: on-failure:5
+    depends_on:
+      - client-postgres-db
+    networks:
+      - network
+
+  client-postgres-db:
+    image: postgres:latest
+    container_name: client-postgres
+    environment:
+      POSTGRES_DB: client
+      POSTGRES_USER: client
+      POSTGRES_PASSWORD: client
+    expose:
+      - 5432
+    volumes:
+      - client-pg_data:/var/lib/postgresql/data
+    networks:
+      - network
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: cont-nginx
+    volumes:
+      - provider-static:/static/provider
+      - client-static:/static/client
+
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
+      - "1337:1337" 
       - "80:80"
     depends_on:
       - provider
+      - client
+    networks:
+      - network
+networks:
+  network:
+    name: my_custom_network
+    driver: bridge
 
 volumes:
-  pg_data:
-  static:
+  client-pg_data:
+  provider-pg_data:
+  provider-static:
+  client-static:
 
-networks:
-  provider-network:
-    driver: bridge

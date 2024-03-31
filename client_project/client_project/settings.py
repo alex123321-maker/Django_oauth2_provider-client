@@ -22,10 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(env_file=os.path.join(BASE_DIR,'.env'))
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
-
+DEBUG = env('DEBUG') == "True"
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:80','http://localhost:1337',"http://127.0.0.1:1337","http://127.0.0.1:80/"]
+
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
 
 
 # Application definition
@@ -85,11 +88,14 @@ WSGI_APPLICATION = 'client_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -113,9 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tomsk'
 
 USE_I18N = True
 
@@ -126,7 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = str(BASE_DIR) + '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,"static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -155,14 +161,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 #superuser: root, root
 
 #OAUTH2_CLIENT_ID  = 'JK6JniqdmX8wq9237o9yUr8bvdP0t2S4eo4xXBIX' # public client
-OAUTH2_CLIENT_ID  = 'NxxMAmnxojRa2TudrDoKFN0IWARlenPoqSiHkByG' # confidentionl client
-OAUTH2_CLIENT_SECRET  = 'ageAK1kLM2q1oW95TMlUysYq7FOtF8GqW4q2euCkQwxfQOybIC0L5EndsC4aTuQxODeiWubLU1maUDbge91hEBmIEp4gdBeCl5WvrjHCV50ZjKxr0SLdwp4QgsCTJCkv'
-OAUTH2_REDIRECT_URI = 'http://127.0.0.2:8000/oauth2/callback/'
-OAUTH2_PROVIDER_URL = 'http://127.0.0.1:8000/o/'
+OAUTH2_CLIENT_ID  = env("OAUTH2_CLIENT_ID")  # confidentionl client
+OAUTH2_CLIENT_SECRET  = env("OAUTH2_CLIENT_SECRET") 
+OAUTH2_REDIRECT_URI =  env("OAUTH2_REDIRECT_URI")
+OAUTH2_PROVIDER_URL =  env("OAUTH2_PROVIDER_URL")
 OAUTH2_REDIRECT_URL = OAUTH2_REDIRECT_URI
 OAUTH2_PROVIDER = {
     
-    'RESOURCE_SERVER_INTROSPECTION_URL': f'{OAUTH2_PROVIDER_URL}introspect/',
+    'RESOURCE_SERVER_INTROSPECTION_URL': f'http://provider:8000/o/introspect/',
     'RESOURCE_SERVER_INTROSPECTION_CREDENTIALS': (OAUTH2_CLIENT_ID,OAUTH2_CLIENT_SECRET),
     
 }

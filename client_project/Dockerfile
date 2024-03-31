@@ -1,11 +1,11 @@
 FROM python:3.11-slim
 
-WORKDIR /provider
+WORKDIR /client
 
 ENV PYTHONDONTWRITEBYTECODE 1
 
 
-COPY . /provider/
+COPY . /client/
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
