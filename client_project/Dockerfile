@@ -1,16 +1,19 @@
 FROM python:3.11-slim
-
 WORKDIR /client
 
+# Устанавливаем необходимые переменные окружения
 ENV PYTHONDONTWRITEBYTECODE 1
 
+# Копируем только entrypoint.sh и устанавливаем ему права на выполнение
+COPY ./entrypoint.sh /client/entrypoint.sh
+RUN chmod +x /client/entrypoint.sh
 
+# Копируем остальные файлы
 COPY . /client/
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Устанавливаем зависимости
+RUN pip install --upgrade pip &&\
+    pip install -r requirements.txt
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+# Явно указываем интерпретатор для entrypoint.sh
+ENTRYPOINT ["/bin/bash", "/client/entrypoint.sh"]

@@ -10,7 +10,6 @@ services:
     build: 
       context: provider_project/
       dockerfile: Dockerfile
-    command: gunicorn provider_project.wsgi:application --bind 0.0.0.0:8000 --log-level info
     expose:
     - 8000
     restart: on-failure:5
